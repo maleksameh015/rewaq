@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - منصة رِوَاق</title>
+    <!-- أيقونات FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #ffffff;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --accent-color: #38bdf8;
+            --gold-color: #f59e0b;
+            --success-color: #22c55e;
+            --shadow: rgba(0, 0, 0, 0.4);
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --accent-color: #0284c7;
+            --gold-color: #d97706;
+            --success-color: #16a34a;
+            --shadow: rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Tahoma, 'Segoe UI', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 15px;
+            text-align: center;
+            min-height: 100vh;
+        }
+
+        .top-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 650px;
+            margin: 0 auto 20px auto;
+            padding: 10px 5px;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--border-color);
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .btn-back:hover {
+            opacity: 0.9;
+        }
+
+        .theme-toggle-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .header-title {
+            margin-bottom: 25px;
+        }
+
+        .header-title h1 {
+            color: var(--gold-color);
+            font-size: 22px;
+            margin-bottom: 6px;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 18px;
+            border-right: 5px solid var(--accent-color);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            border-left: 1px solid var(--border-color);
+            text-align: right;
+            box-shadow: 0 4px 12px var(--shadow);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .card.completed {
+            border-right-color: var(--success-color);
+            opacity: 0.85;
+            background: rgba(34, 197, 94, 0.05);
+        }
+
+        .card p {
+            font-size: 16px;
+            line-height: 1.9;
+            color: var(--text-color);
+            font-family: 'Amiri', 'Traditional Arabic', Tahoma, sans-serif;
+            background: var(--bg-color);
+            padding: 14px 16px;
+            border-radius: 10px;
+            border: 1px dashed var(--border-color);
+            margin-bottom: 15px;
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .counter-btn {
+            background: var(--accent-color);
+            color: #0f172a;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.1s, background-color 0.2s;
+            user-select: none;
+        }
+
+        .counter-btn:active {
+            transform: scale(0.95);
+        }
+
+        .counter-btn.done {
+            background: var(--success-color);
+            color: #ffffff;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            background: var(--border-color);
+            color: var(--text-color);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .icon-btn:hover {
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-navbar">
+        <a href="{{ url_for('azkar_hadith_menu') }}" class="btn-back"><i class="fa-solid fa-arrow-right"></i> العودة لقائمة الأذكار</a>
+        <button class="theme-toggle-btn" onclick="toggleTheme()" aria-label="تبديل الثيم">
+            <i class="fa-solid fa-moon" id="theme-icon"></i>
+        </button>
+    </div>
+
+    <div class="header-title">
+        <h1><i class="fa-solid fa-book-bookmark"></i> {{ title }}</h1>
+    </div>
+
+    <div class="container" id="content-container">
+        <p style="color: var(--text-muted);">جاري تحميل المحتوى...</p>
+    </div>
+
+    <script>
+        const category = "{{ category }}";
+        const container = document.getElementById('content-container');
+
+        // الأذكار القادمة من السيرفر (التي أضافها الأدمن)
+        const dynamicAzkar = {{ azkar | tojson | safe if azkar else '[]' }};
+
+        // الأذكار الأساسية الافتراضية
+        const defaultData = {
+            'sabah': [
+                { content: "أَصْبَحْنَا وَأَصْبَحَ المُلْكُ لِلَّهِ، وَالحَمْدُ لِلَّهِ لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ.", count: 1 },
+                { content: "اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ.", count: 1 },
+                { content: "آيَةُ الكُرْسِيِّ: (اللَّهُ لاَ إِلَهَ إِلاَّ هُوَ الحَيُّ القَيُّومُ لاَ تَأْخُذُهُ سِنَةٌ وَلاَ نَوْمٌ...)", count: 1 },
+                { content: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ: عَدَدَ خَلْقِهِ، وَرِضَا نَفْسِهِ، وَزِنَةَ عَرْشِهِ، وَمِدَادَ كَلِمَاتِهِ.", count: 3 }
+            ],
+            'masea': [
+                { content: "أَمْسَيْنَا وَأَمْسَى المُلْكُ لِلَّهِ، وَالحَمْدُ لِلَّهِ لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ.", count: 1 },
+                { content: "اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ المَصِيرُ.", count: 1 },
+                { content: "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ.", count: 3 }
+            ],
+            'nom': [
+                { content: "بِاسْمِكَ رَبِّي وَضَعْتُ جَنْبِي، وَبِكَ أَرْفَعُهُ، فَإِنْ أَمْسَكْتَ نَفْسِي فَارْحَمْهَا، وَإِنْ أَرْسَلْتَهَا فَاحْفَظْهَا بِمَا تَحْفَظُ بِهِ عِبَادَكَ الصَّالِحِينَ.", count: 1 },
+                { content: "اللَّهُمَّ قِنِي عَذَابَكَ يَوْمَ تَبْعَثُ عِبَادَكَ.", count: 3 }
+            ],
+            'hadith': [
+                { content: "الحديث الأول: عَنْ أَمِيرِ المُؤْمِنِينَ أَبِي حَفْصٍ عُمَرَ بْنِ الخَطَّابِ رَضِيَ اللَّهُ عَنْهُ قَالَ: سَمِعْتُ رَسُولَ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ يَقُولُ: (إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ، وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى...).", count: 1 },
+                { content: "الحديث الثاني: عَنْ عُمَرَ رَضِيَ اللَّهُ عَنْهُ أَيْضًا قَالَ: بَيْنَمَا نَحْنُ جُلُوسٌ عِنْدَ رَسُولِ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ ذَاتَ يَوْمٍ إِذْ طَلَعَ عَلَيْنَا رَجُلٌ شَدِيدُ بَيَاضِ الثِّيَابِ شَدِيدُ سَوَادِ الشَّعَرِ... (حديث جبريل عليه السلام في بيان الإسلام والإيمان والإحسان).", count: 1 }
+            ]
+        };
+
+        // دمج الأذكار الديناميكية المضافة من الأدمن مع الأذكار الافتراضية
+        const baseItems = defaultData[category] || [];
+        const allItems = [...dynamicAzkar, ...baseItems];
+
+        if (allItems.length === 0) {
+            container.innerHTML = '<p style="color: var(--text-muted);">لا يوجد محتوى متاح حالياً لهذا القسم.</p>';
+        } else {
+            container.innerHTML = '';
+            allItems.forEach((item, index) => {
+                const text = item.content || item.text || '';
+                const maxCount = parseInt(item.count) || 1;
+
+                const div = document.createElement('div');
+                div.className = 'card';
+                div.id = `card-${index}`;
+                div.innerHTML = `
+                    <p>"${text}"</p>
+                    <div class="card-actions">
+                        <button class="counter-btn" onclick="decrement(this, ${maxCount}, ${index})">
+                            <i class="fa-solid fa-fingerprint"></i> التكرار المطلوب: <span class="num">${maxCount}</span>
+                        </button>
+                        <div class="action-btns">
+                            <button class="icon-btn" onclick="copyText(this, '${text.replace(/'/g, "\\'")}')" title="نسخ النص">
+                                <i class="fa-solid fa-copy"></i>
+                            </button>
+                            <button class="icon-btn" onclick="resetCounter(${index}, ${maxCount})" title="إعادة الضبط">
+                                <i class="fa-solid fa-rotate-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function decrement(btn, initial, index) {
+            const span = btn.querySelector('.num');
+            const card = document.getElementById(`card-${index}`);
+            let val = parseInt(span.innerText);
+
+            if (val > 1) {
+                span.innerText = val - 1;
+            } else if (val === 1) {
+                span.innerText = '0';
+                btn.classList.add('done');
+                btn.innerHTML = '<i class="fa-solid fa-check-double"></i> تم القراءة ✔';
+                card.classList.add('completed');
+            }
+        }
+
+        function resetCounter(index, initial) {
+            const card = document.getElementById(`card-${index}`);
+            const btn = card.querySelector('.counter-btn');
+            card.classList.remove('completed');
+            btn.classList.remove('done');
+            btn.innerHTML = `<i class="fa-solid fa-fingerprint"></i> التكرار المطلوب: <span class="num">${initial}</span>`;
+        }
+
+        function copyText(btn, text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const icon = btn.querySelector('i');
+                icon.className = 'fa-solid fa-check';
+                btn.style.color = 'var(--success-color)';
+                setTimeout(() => {
+                    icon.className = 'fa-solid fa-copy';
+                    btn.style.color = '';
+                }, 1500);
+            });
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('theme-icon');
+            if (icon) {
+                icon.className = theme === 'light' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إعدادات الحساب - منصة السعيد</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Tahoma, 'Segoe UI', sans-serif; }
+        body { 
+            background-color: #0f172a; 
+            color: #ffffff; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            padding: 20px; 
+        }
+        .card { 
+            background: #1e293b; 
+            border: 1px solid #334155; 
+            border-radius: 16px; 
+            padding: 30px 20px; 
+            width: 100%; 
+            max-width: 420px; 
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4); 
+        }
+        .card-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .card-header i {
+            font-size: 45px;
+            color: #38bdf8;
+            margin-bottom: 10px;
+        }
+        .card-header h2 { 
+            color: #38bdf8; 
+            font-size: 22px; 
+        }
+        .card-header p {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+        .form-group {
+            margin-bottom: 18px;
+            text-align: right;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+        .input-box { 
+            width: 100%; 
+            padding: 12px 14px; 
+            background: #0f172a; 
+            border: 1px solid #334155; 
+            color: #fff; 
+            border-radius: 10px; 
+            font-size: 14px; 
+            outline: none; 
+            transition: border-color 0.3s ease; 
+        }
+        .input-box:focus { border-color: #38bdf8; }
+        .input-box:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: #1e293b;
+        }
+        select.input-box { cursor: pointer; }
+        select.input-box option { background: #0f172a; color: #fff; }
+        
+        .btn-submit { 
+            width: 100%; 
+            padding: 14px; 
+            background: #38bdf8; 
+            border: none; 
+            color: #0f172a; 
+            font-weight: bold; 
+            font-size: 15px; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            margin-top: 10px; 
+            transition: 0.3s ease; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-submit:hover { background: #0284c7; color: #ffffff; }
+        
+        .back-link { 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px; 
+            font-size: 14px; 
+            color: #94a3b8; 
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        .back-link:hover { color: #38bdf8; }
+    </style>
+</head>
+<body>
+    {% if error %}<div class="settings-error" role="alert" style="max-width:600px;margin:12px auto;padding:12px 16px;border-radius:10px;background:#7f1d1d;color:#fff;text-align:center">{{ error }}</div>{% endif %}
+    <div class="card">
+        <div class="card-header">
+            <i class="fa-solid fa-sliders"></i>
+            <h2>إعدادات الحساب</h2>
+            <p>تعديل بيانات حسابك الشخصي والمسار التعليمي</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('settings') }}">
+            <div class="form-group">
+                <label><i class="fa-solid fa-user"></i> الاسم بالكامل:</label>
+                <input type="text" name="name" class="input-box" value="{{ user.name if user else '' }}" placeholder="الاسم بالكامل" required>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fa-solid fa-id-card"></i> معرف الحساب (الهاتف / البريد):</label>
+                <input type="text" class="input-box" value="{{ user.identifier if user else '' }}" disabled>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fa-solid fa-graduation-cap"></i> المسار الدراسي:</label>
+                <select name="track" class="input-box" required>
+                    {% for key, label in tracks.items() %}
+                        <option value="{{ key }}" {% if user and user.track == key %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fa-solid fa-lock"></i> تغيير كلمة المرور:</label>
+                <input type="password" name="password" class="input-box" placeholder="اتركه فارغاً للحفاظ على كلمة المرور الحالية">
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <i class="fa-solid fa-floppy-disk"></i> حفظ التغييرات
+            </button>
+        </form>
+
+        <a href="{{ url_for('index') }}" class="back-link">
+            <i class="fa-solid fa-arrow-right"></i> العودة للصفحة الرئيسية
+        </a>
+    </div>
+</body>
+</html>

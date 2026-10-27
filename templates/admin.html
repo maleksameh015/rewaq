@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - منصة رِوَاق للعلوم الشرعية</title>
+    <!-- أيقونات FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0b1329;
+            --card-bg: #121e36;
+            --text-color: #ffffff;
+            --text-muted: #94a3b8;
+            --border-color: #1e2f52;
+            --accent-color: #10b981;
+            --gold-color: #f59e0b;
+            --sky-blue: #38bdf8;
+            --danger-color: #ef4444;
+            --shadow: rgba(0, 0, 0, 0.4);
+            --input-bg: #091024;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: Tahoma, 'Segoe UI', sans-serif; 
+        }
+        
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            padding: 15px; 
+            min-height: 100vh; 
+        }
+        
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto 20px auto; 
+            background: var(--card-bg); 
+            padding: 22px; 
+            border-radius: 16px; 
+            text-align: right; 
+            border: 1px solid var(--border-color); 
+            box-shadow: 0 4px 15px var(--shadow); 
+        }
+        
+        .top-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto 20px auto;
+            padding: 10px 5px;
+        }
+
+        .btn-back { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px; 
+            background: var(--border-color); 
+            color: var(--text-color); 
+            padding: 9px 18px; 
+            border-radius: 10px; 
+            text-decoration: none; 
+            font-weight: bold; 
+            font-size: 14px; 
+        }
+
+        input, select, textarea { 
+            width: 100%; 
+            padding: 12px; 
+            margin: 8px 0 16px 0; 
+            border-radius: 8px; 
+            border: 1px solid var(--border-color); 
+            background: var(--input-bg); 
+            color: var(--text-color); 
+            box-sizing: border-box; 
+            font-size: 14px; 
+            outline: none;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--accent-color);
+        }
+        
+        label { 
+            font-size: 13px; 
+            font-weight: bold; 
+            color: var(--sky-blue); 
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        .btn-submit { 
+            display: block; 
+            width: 100%; 
+            padding: 13px; 
+            background: var(--accent-color); 
+            color: white; 
+            border: none; 
+            border-radius: 10px; 
+            font-size: 15px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: opacity 0.2s;
+        }
+
+        .btn-submit:hover { opacity: 0.9; }
+        
+        .btn-delete { 
+            background: var(--danger-color); 
+            color: white; 
+            border: none; 
+            padding: 6px 12px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 12px; 
+            flex-shrink: 0;
+        }
+
+        .btn-action {
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-ban { background: #b91c1c; }
+        .btn-unban { background: #059669; }
+        .btn-mod { background: #2563eb; }
+        .btn-unmod { background: #d97706; }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            color: white;
+            border: none;
+            padding: 11px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 15px;
+            transition: opacity 0.2s;
+        }
+
+        .item-row { 
+            background: var(--input-bg); 
+            padding: 12px 15px; 
+            margin: 8px 0; 
+            border-radius: 10px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            gap: 10px;
+            border: 1px solid var(--border-color); 
+            font-size: 14px; 
+        }
+        
+        .user-card { 
+            background: var(--input-bg); 
+            padding: 14px; 
+            margin: 12px 0; 
+            border-radius: 12px; 
+            border-right: 4px solid var(--accent-color); 
+            border: 1px solid var(--border-color); 
+        }
+        .user-card.banned {
+            border-right-color: var(--danger-color);
+            background: #1a1018;
+        }
+
+        .toggle-btn {
+            width: 100%;
+            background: var(--input-bg);
+            color: var(--sky-blue);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .toggle-btn:hover { border-color: var(--accent-color); }
+
+        .collapsible-content {
+            display: none;
+            margin-top: 15px;
+        }
+
+        .sub-header { 
+            color: var(--gold-color); 
+            font-weight: bold; 
+            margin: 16px 0 8px 0; 
+            font-size: 14px; 
+            border-bottom: 1px dashed var(--border-color); 
+            padding-bottom: 4px; 
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-right: 6px;
+        }
+        .badge-mod { background: rgba(56, 189, 248, 0.2); color: #38bdf8; }
+        .badge-banned { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+
+        .question-box {
+            background: #091224;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 12px;
+        }
+
+        h2 { 
+            color: var(--accent-color); 
+            border-bottom: 1px solid var(--border-color); 
+            padding-bottom: 8px; 
+            margin-bottom: 16px; 
+            font-size: 18px; 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-navbar">
+        <a href="{{ url_for('index') }}" class="btn-back"><i class="fa-solid fa-house"></i> العودة للمنصة</a>
+        <span style="font-weight: bold; color: var(--gold-color);"><i class="fa-solid fa-mosque"></i> منصة رِوَاق الشرعية</span>
+    </div>
+
+    <!-- 0. إرسال إشعار فوري لجميع الطلاب عبر OneSignal -->
+    <div class="container" style="border: 1.5px solid #38bdf8;">
+        <h2><i class="fa-solid fa-bullhorn"></i> إرسال إشعار فوري لجميع الطلاب</h2>
+        <form method="POST" action="{{ url_for('admin') }}">
+            <input type="hidden" name="send_broadcast" value="1">
+
+            <label for="broadcast_title">عنوان الإشعار:</label>
+            <input type="text" id="broadcast_title" name="broadcast_title" placeholder="مثال: درس جديد متاح الآن في قسم الفقه 📖" required>
+
+            <label for="broadcast_msg">نص الرسالة / تفاصيل الإشعار:</label>
+            <textarea id="broadcast_msg" name="broadcast_msg" rows="2" placeholder="تم نشر المحاضرة الثانية لا تنسوا المتابعة..." required></textarea>
+
+            <label for="broadcast_url">رابط فتح الإشعار (اختياري):</label>
+            <input type="text" id="broadcast_url" name="broadcast_url" placeholder="/section/fiqh أو /chat أو اتركها فارغة">
+
+            <button type="submit" class="btn-submit" style="background: #0284c7;">
+                <i class="fa-solid fa-paper-plane"></i> بث الإشعار الفوري لجميع المشتركين
+            </button>
+        </form>
+    </div>
+
+    <!-- 1. إضافة محاضرة / درس جديد (فيديو + ريكورد صوتي) -->
+    <div class="container" style="border: 1.5px solid var(--accent-color);">
+        <h2><i class="fa-solid fa-video"></i> إضافة محاضرة أو درس جديد</h2>
+        <form method="POST" action="{{ url_for('admin') }}" enctype="multipart/form-data">
+            <input type="hidden" name="add_lecture" value="1">
+
+            <label for="section">اختر القسم الشرعي:</label>
+            <select name="section" id="section" required>
+                {% for sec_id, sec_data in sections.items() %}
+                    <option value="{{ sec_id }}">{{ sec_data.name }} ({{ sec_data.desc }})</option>
+                {% endfor %}
+            </select>
+
+            <label for="title">عنوان الدرس أو المحاضرة:</label>
+            <input type="text" id="title" name="title" placeholder="مثال: المحاضرة 1 - مقدمة في أصول الفقه" required>
+
+            <label for="description">وصف المحاضرة أو النقاط الأساسية (اختياري):</label>
+            <textarea id="description" name="description" rows="2" placeholder="أبرز ما تحتويه المحاضرة ومراجع الدرس..."></textarea>
+
+            <label for="link"><i class="fa-solid fa-link"></i> رابط الفيديو (يوتيوب أو رابط مباشر):</label>
+            <input type="url" id="link" name="link" placeholder="https://www.youtube.com/watch?v=...">
+
+            <label for="audio_link"><i class="fa-solid fa-microphone-lines"></i> رابط الريكورد / التسجيل الصوتي للدرس (اختياري):</label>
+            <input type="url" id="audio_link" name="audio_link" placeholder="رابط تسجيل صوتي MP3 أو Google Drive مباشر...">
+
+            <button type="submit" class="btn-submit">🚀 نشر وإضافة المحاضرة للقسم</button>
+        </form>
+    </div>
+
+    <!-- 2. إضافة مذكرة / تلخيص PDF للقسم -->
+    <div class="container" style="border: 1.5px solid #818cf8;">
+        <h2><i class="fa-solid fa-book-open"></i> إضافة مذكرة أو تلخيص PDF للقسم</h2>
+        <form method="POST" action="{{ url_for('admin') }}">
+            <input type="hidden" name="add_note" value="1">
+
+            <label for="note_section">اختر القسم الشرعي:</label>
+            <select name="section" id="note_section" required>
+                {% for sec_id, sec_data in sections.items() %}
+                    <option value="{{ sec_id }}">{{ sec_data.name }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="note_title">عنوان المذكرة / التلخيص:</label>
+            <input type="text" id="note_title" name="note_title" placeholder="مثال: تفريغ ملخص المحاضرة الأولى فقه" required>
+
+            <label for="note_link">رابط المذكرة (Google Drive / PDF مباشر):</label>
+            <input type="url" id="note_link" name="note_link" placeholder="https://drive.google.com/..." required>
+
+            <button type="submit" class="btn-submit" style="background:#6366f1;">
+                <i class="fa-solid fa-file-arrow-up"></i> حفظ ونشر المذكرة للطلاب
+            </button>
+        </form>
+    </div>
+
+    <!-- 3. إضافة امتحان (داخلي بأسئلة أو رابط خارجي) -->
+    <div class="container" style="border: 1.5px solid var(--gold-color);">
+        <button type="button" class="toggle-btn" style="color: var(--gold-color);" onclick="toggleSection('exam-creator-section', 'exam-creator-icon')">
+            <span><i class="fa-solid fa-pen-ruler"></i> إنشاء وإضافة امتحان جديد لكل قسم</span>
+            <i class="fa-solid fa-chevron-down" id="exam-creator-icon"></i>
+        </button>
+
+        <div id="exam-creator-section" class="collapsible-content">
+            <form method="POST" action="{{ url_for('admin') }}" onsubmit="prepareExamData(event)">
+                <input type="hidden" name="add_exam" value="1">
+                <input type="hidden" name="questions_json" id="questions_json">
+
+                <label for="exam_section">اختر القسم التابع له الاختبار:</label>
+                <select name="section" id="exam_section" required>
+                    {% for sec_id, sec_data in sections.items() %}
+                        <option value="{{ sec_id }}">{{ sec_data.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="exam_title">عنوان الاختبار:</label>
+                <input type="text" id="exam_title" name="exam_title" placeholder="مثال: اختبار الفقه على المحاضرة الأولى والثانية" required>
+
+                <label for="exam_type">نوع الامتحان:</label>
+                <select name="exam_type" id="exam_type" onchange="toggleExamType(this.value)">
+                    <option value="internal">امتحان تفاعلي داخل المنصة (أسئلة واختيارات)</option>
+                    <option value="external">امتحان برابط خارجي (Google Form / نموذج خارجي)</option>
+                </select>
+
+                <!-- حقل الرابط الخارجي (مخفي افتراضياً) -->
+                <div id="external-link-box" style="display: none;">
+                    <label for="external_link"><i class="fa-solid fa-link"></i> رابط الامتحان الخارجي:</label>
+                    <input type="url" id="external_link" name="external_link" placeholder="https://forms.google.com/...">
+                </div>
+
+                <!-- حاوية الأسئلة الداخلية -->
+                <div id="internal-questions-box">
+                    <div class="sub-header">📝 أسئلة الاختبار:</div>
+                    <div id="questions-container"></div>
+
+                    <button type="button" onclick="addQuestionField()" style="background:#334155; color:#fff; border:none; padding:10px; border-radius:8px; width:100%; font-weight:bold; cursor:pointer; margin-bottom:15px;">
+                        ➕ إضافة سؤال جديد للاختبار
+                    </button>
+                </div>
+
+                <button type="submit" class="btn-submit" style="background: var(--gold-color); color: #0b1329;">
+                    💾 حفظ ونشر الاختبار للطلاب
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 4. متابعة حضور ومشاهدات الطلاب وإدارة الحسابات (حظر - مشرفين - حذف) -->
+    <div class="container">
+        <button type="button" class="toggle-btn" style="color: #38bdf8;" onclick="toggleSection('watch-tracker-section', 'watch-tracker-icon')">
+            <span><i class="fa-solid fa-users-gear"></i> إدارة الطلاب والمشرفين (العدد الكلي: {{ total_users }})</span>
+            <i class="fa-solid fa-chevron-down" id="watch-tracker-icon"></i>
+        </button>
+
+        <div id="watch-tracker-section" class="collapsible-content">
+            
+            <form method="POST" action="{{ url_for('reset_students') }}" onsubmit="return confirm('تنبيه هام: هل أنت متأكد من رغبتك في حذف وتصفير جميع حسابات الطلاب والمشاهدات السابقة والبدء من 0 تماماً؟');">
+                <button type="submit" class="btn-reset">
+                    <i class="fa-solid fa-trash-can"></i> تصفير قائمة الطلاب والمشاهدات لمنصة رِوَاق (البدء من 0)
+                </button>
+            </form>
+
+            <input type="text" id="search-users" placeholder="🔍 ابحث عن طالب بالاسم أو الرقم..." onkeyup="filterUsers()" style="margin-bottom: 15px; border-color: var(--sky-blue);">
+
+            <div id="users-list">
+                {% if users %}
+                    {% for u in users %}
+                        {% set u_id = u.identifier|string %}
+                        {% set is_banned = u_id in banned_users %}
+                        {% set is_mod = u_id in moderators %}
+                        <div class="user-card searchable-user {% if is_banned %}banned{% endif %}">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
+                                <div>
+                                    <strong class="u-name" style="font-size: 16px; color: #fff;">{{ u.name }}</strong>
+                                    {% if is_mod %}<span class="badge badge-mod"><i class="fa-solid fa-shield"></i> مشرف شات</span>{% endif %}
+                                    {% if is_banned %}<span class="badge badge-banned"><i class="fa-solid fa-ban"></i> محظور</span>{% endif %}
+                                    <div class="u-id" style="font-size: 13px; color: var(--text-muted); margin-top: 3px;">📱 المعرف / الهاتف: {{ u.identifier }}</div>
+                                </div>
+
+                                <!-- أزرار التحكم في الطالب -->
+                                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                                    <!-- زر المشرف -->
+                                    <form action="{{ url_for('admin_toggle_moderator', user_identifier=u_id) }}" method="POST">
+                                        <button type="submit" class="btn-action {% if is_mod %}btn-unmod{% else %}btn-mod{% endif %}">
+                                            <i class="fa-solid fa-user-shield"></i> {% if is_mod %}سحب الإشراف{% else %}ترقية لمشرف{% endif %}
+                                        </button>
+                                    </form>
+
+                                    <!-- زر الحظر -->
+                                    {% if is_banned %}
+                                        <form action="{{ url_for('admin_unban_user', user_identifier=u_id) }}" method="POST">
+                                            <button type="submit" class="btn-action btn-unban"><i class="fa-solid fa-check"></i> إلغاء الحظر</button>
+                                        </form>
+                                    {% else %}
+                                        <form action="{{ url_for('admin_ban_user', user_identifier=u_id) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من حظر هذا الطالب من الدخول نهائياً؟');">
+                                            <button type="submit" class="btn-action btn-ban"><i class="fa-solid fa-ban"></i> حظر نهائي</button>
+                                        </form>
+                                    {% endif %}
+
+                                    <!-- زر الحذف النهائي -->
+                                    <form action="{{ url_for('admin_delete_user', user_identifier=u_id) }}" method="POST" onsubmit="return confirm('حذف حساب الطالب تماماً؟');">
+                                        <button type="submit" class="btn-action" style="background:#475569;"><i class="fa-solid fa-trash"></i> حذف</button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- تفاصيل المشاهدات -->
+                            <div class="sub-header">📚 المحاضرات المؤكدة:</div>
+                            <ul style="padding-right: 20px; font-size: 13px; color: #cbd5e1; margin-top: 6px;">
+                                {% set ns = namespace(watched_count=0) %}
+                                {% for sec_key, sec_lectures in data.get('islamic_sections', {}).items() %}
+                                    {% for lec in sec_lectures %}
+                                        {% if u_id in watch_records.get(lec.id, []) %}
+                                            {% set ns.watched_count = ns.watched_count + 1 %}
+                                            <li><span style="color:#10b981;">✓</span> {{ sections[sec_key]['name'] }}: {{ lec.title }}</li>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                                {% if ns.watched_count == 0 %}
+                                    <li style="color: #ef4444; list-style: none;">⚠️ لم يسجل إتمام أي محاضرة بعد.</li>
+                                {% endif %}
+                            </ul>
+
+                            <!-- نتائج الاختبارات -->
+                            <div class="sub-header">✍️ درجات الاختبارات:</div>
+                            <ul style="padding-right: 20px; font-size: 13px; color: #cbd5e1; margin-top: 6px;">
+                                {% set exam_count = namespace(taken=0) %}
+                                {% for exam_id, results in exam_results.items() %}
+                                    {% for r in results %}
+                                        {% if r.user_identifier|string == u_id %}
+                                            {% set exam_count.taken = exam_count.taken + 1 %}
+                                            <li>حصل على <strong>{{ r.score }} / {{ r.total }}</strong> بتاريخ {{ r.date }}</li>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                                {% if exam_count.taken == 0 %}
+                                    <li style="color: var(--text-muted); list-style: none;">لم يؤدِ أي اختبارات بعد.</li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p style="text-align: center; color: var(--text-muted); padding: 15px 0;">لا يوجد طلاب مسجلين حالياً (العدد: 0).</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. إدارة وحذف المحتويات (مقسمة لكل قسم: شروحات - مذكرات - امتحانات) -->
+    <div class="container">
+        <button type="button" class="toggle-btn" onclick="toggleSection('manage-content-section', 'manage-content-icon')">
+            <span><i class="fa-solid fa-list-check"></i> إدارة محتوى الأقسام (شروحات - مذكرات - اختبارات)</span>
+            <i class="fa-solid fa-chevron-down" id="manage-content-icon"></i>
+        </button>
+
+        <div id="manage-content-section" class="collapsible-content">
+            {% for sec_key, sec_info in sections.items() %}
+                <div style="background:#091224; border:1px solid var(--border-color); border-radius:12px; padding:15px; margin-bottom:15px;">
+                    <div style="font-size:16px; font-weight:bold; color:var(--sky-blue); margin-bottom:10px;">
+                        <i class="fa-solid {{ sec_info.icon }}"></i> قسم {{ sec_info.name }}
+                    </div>
+                    
+                    <!-- 1. الشروحات والمحاضرات -->
+                    <div class="sub-header" style="color:var(--accent-color);"><i class="fa-solid fa-video"></i> الشروحات والمحاضرات:</div>
+                    {% set lectures = data.get('islamic_sections', {}).get(sec_key, []) %}
+                    {% if lectures %}
+                        {% for lec in lectures %}
+                            <div class="item-row">
+                                <div>
+                                    <strong>{{ lec.title }}</strong>
+                                    {% if lec.get('audio_url') %}<span style="color:var(--gold-color); font-size:11px; margin-right:5px;">🎙️ ريكورد متاح</span>{% endif %}
+                                    <br><small style="color:var(--text-muted);">المشاهدات: {{ watch_records.get(lec.id, [])|length }} طالب</small>
+                                </div>
+                                <form action="{{ url_for('delete_lecture', sec_key=sec_key, lec_id=lec.id) }}" method="POST" onsubmit="return confirm('حذف المحاضرة؟');">
+                                    <button type="submit" class="btn-delete">حذف</button>
+                                </form>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p style="font-size:12px; color:var(--text-muted);">لا توجد شروحات في هذا القسم.</p>
+                    {% endif %}
+
+                    <!-- 2. المذكرات والملخصات -->
+                    <div class="sub-header" style="color:#818cf8;"><i class="fa-solid fa-file-pdf"></i> المذكرات والملخصات:</div>
+                    {% set notes = data.get('section_notes', {}).get(sec_key, []) %}
+                    {% if notes %}
+                        {% for n in notes %}
+                            <div class="item-row">
+                                <div>
+                                    <strong>{{ n.title }}</strong><br>
+                                    <a href="{{ n.link }}" target="_blank" style="color:var(--sky-blue); font-size:11px; text-decoration:none;">عرض المذكرة 🔗</a>
+                                </div>
+                                <form action="{{ url_for('delete_section_note', sec_key=sec_key, note_id=n.id) }}" method="POST" onsubmit="return confirm('حذف المذكرة؟');">
+                                    <button type="submit" class="btn-delete">حذف</button>
+                                </form>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p style="font-size:12px; color:var(--text-muted);">لا توجد مذكرات مضافة.</p>
+                    {% endif %}
+
+                    <!-- 3. الامتحانات والاختبارات -->
+                    <div class="sub-header" style="color:var(--gold-color);"><i class="fa-solid fa-pen-clip"></i> الامتحانات:</div>
+                    {% set exams = data.get('exams', {}).get(sec_key, []) %}
+                    {% if exams %}
+                        {% for ex in exams %}
+                            <div class="item-row">
+                                <div>
+                                    <strong>{{ ex.title }}</strong>
+                                    {% if ex.get('type') == 'external' %}
+                                        <span style="color:var(--sky-blue); font-size:11px; margin-right:5px;">🌐 رابط خارجي</span>
+                                    {% else %}
+                                        <small style="color:var(--text-muted);">عدد الأسئلة: {{ ex.questions|length }}</small>
+                                    {% endif %}
+                                </div>
+                                <form action="{{ url_for('delete_exam', sec_key=sec_key, exam_id=ex.id) }}" method="POST" onsubmit="return confirm('حذف الامتحان؟');">
+                                    <button type="submit" class="btn-delete">حذف</button>
+                                </form>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p style="font-size:12px; color:var(--text-muted);">لا توجد اختبارات مضافة.</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- 6. إدارة قسم حسانات (الأدعية والأذكار) -->
+    <div class="container">
+        <button type="button" class="toggle-btn" onclick="toggleSection('hasanat-admin-section', 'hasanat-admin-icon')">
+            <span><i class="fa-solid fa-hands-praying"></i> إدارة الأدعية والأذكار (قسم حسانات)</span>
+            <i class="fa-solid fa-chevron-down" id="hasanat-admin-icon"></i>
+        </button>
+
+        <div id="hasanat-admin-section" class="collapsible-content">
+            <form method="POST" action="{{ url_for('add_dua') }}" style="margin-bottom: 20px;">
+                <label for="dua_title">عنوان الدعاء:</label>
+                <input type="text" id="dua_title" name="dua_title" placeholder="مثال: دعاء الإخلاص وطلب العلم" required>
+
+                <label for="dua_content">نص الدعاء:</label>
+                <textarea id="dua_content" name="dua_content" rows="3" required></textarea>
+
+                <button type="submit" class="btn-submit" style="background:#8b5cf6;">➕ إضافة دعاء جديد</button>
+            </form>
+
+            <form method="POST" action="{{ url_for('add_zekr') }}" style="margin-bottom: 20px;">
+                <label for="azkar_category">اختر تصنيف الذكر / الحديث:</label>
+                <select name="category" id="azkar_category" required>
+                    <option value="sabah">أذكار الصباح</option>
+                    <option value="masea">أذكار المساء</option>
+                    <option value="nom">أذكار النوم</option>
+                    <option value="hadith">الأربعين النووية</option>
+                </select>
+
+                <label for="zekr_content">نص الذكر:</label>
+                <textarea id="zekr_content" name="zekr_content" rows="2" required></textarea>
+
+                <label for="zekr_count">التكرار المطلوب:</label>
+                <input type="number" id="zekr_count" name="zekr_count" min="1" value="1" required>
+
+                <button type="submit" class="btn-submit" style="background:#3b82f6;">➕ إضافة الذكر</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 7. النسخ الاحتياطي لقاعدة البيانات -->
+    <div class="container">
+        <h2><i class="fa-solid fa-database"></i> النسخ الاحتياطي</h2>
+        <a href="{{ url_for('download_backup') }}" class="btn-submit" style="background:#0284c7; text-decoration:none; text-align:center;">
+            📥 تحميل نسخة احتياطية للبيانات (Backup JSON)
+        </a>
+    </div>
+
+    <script>
+        function toggleSection(secId, iconId) {
+            const sec = document.getElementById(secId);
+            const icon = document.getElementById(iconId);
+            if (sec.style.display === "block") {
+                sec.style.display = "none";
+                icon.className = "fa-solid fa-chevron-down";
+            } else {
+                sec.style.display = "block";
+                icon.className = "fa-solid fa-chevron-up";
+            }
+        }
+
+        function filterUsers() {
+            const val = document.getElementById('search-users').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.searchable-user');
+            cards.forEach(card => {
+                const name = card.querySelector('.u-name').innerText.toLowerCase();
+                const id = card.querySelector('.u-id').innerText.toLowerCase();
+                card.style.display = (name.includes(val) || id.includes(val)) ? "block" : "none";
+            });
+        }
+
+        function toggleExamType(val) {
+            const extBox = document.getElementById('external-link-box');
+            const intBox = document.getElementById('internal-questions-box');
+            if (val === 'external') {
+                extBox.style.display = 'block';
+                intBox.style.display = 'none';
+            } else {
+                extBox.style.display = 'none';
+                intBox.style.display = 'block';
+            }
+        }
+
+        // منشئ أسئلة الامتحانات ديناميكياً
+        let questionCounter = 0;
+        function addQuestionField() {
+            const container = document.getElementById('questions-container');
+            const qDiv = document.createElement('div');
+            qDiv.className = 'question-box';
+            qDiv.id = `q_box_${questionCounter}`;
+            qDiv.innerHTML = `
+                <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                    <strong style="color:var(--gold-color);">السؤال ${questionCounter + 1}</strong>
+                    <button type="button" onclick="document.getElementById('q_box_${questionCounter}').remove()" style="color:#ef4444; background:none; border:none; cursor:pointer;">حذف السؤال</button>
+                </div>
+                <input type="text" class="q-text" placeholder="نص السؤال">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <input type="text" class="q-opt1" placeholder="الاختيار الأول">
+                    <input type="text" class="q-opt2" placeholder="الاختيار الثاني">
+                    <input type="text" class="q-opt3" placeholder="الاختيار الثالث">
+                    <input type="text" class="q-opt4" placeholder="الاختيار الرابع">
+                </div>
+                <label>اختر رقم الإجابة الصحيحة:</label>
+                <select class="q-correct">
+                    <option value="1">الاختيار الأول</option>
+                    <option value="2">الاختيار الثاني</option>
+                    <option value="3">الاختيار الثالث</option>
+                    <option value="4">الاختيار الرابع</option>
+                </select>
+            `;
+            container.appendChild(qDiv);
+            questionCounter++;
+        }
+
+        function prepareExamData(e) {
+            const type = document.getElementById('exam_type').value;
+            if (type === 'external') {
+                const extLink = document.getElementById('external_link').value.trim();
+                if (!extLink) {
+                    alert("يرجى إدخال رابط الامتحان الخارجي!");
+                    e.preventDefault();
+                    return false;
+                }
+                return true;
+            }
+
+            const boxes = document.querySelectorAll('.question-box');
+            if (boxes.length === 0) {
+                alert("يرجى إضافة سؤال واحد على الأقل للاختبار!");
+                e.preventDefault();
+                return false;
+            }
+            const questions = [];
+            boxes.forEach(box => {
+                const qText = box.querySelector('.q-text').value.trim();
+                const opt1 = box.querySelector('.q-opt1').value.trim();
+                const opt2 = box.querySelector('.q-opt2').value.trim();
+                const opt3 = box.querySelector('.q-opt3').value.trim();
+                const opt4 = box.querySelector('.q-opt4').value.trim();
+                const correct = box.querySelector('.q-correct').value;
+                if (qText) {
+                    questions.push({
+                        question: qText,
+                        options: [opt1, opt2, opt3, opt4],
+                        correct_answer: correct
+                    });
+                }
+            });
+            document.getElementById('questions_json').value = JSON.stringify(questions);
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            addQuestionField();
+        });
+    </script>
+</body>
+</html>

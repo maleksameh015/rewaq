@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#070d18">
+    <title>شات رِوَاق - مدارسة وتواصل</title>
+
+    <link rel="manifest" href="{{ url_for('manifest') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}?v=99">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #070d18;
+            --card-bg: #0f172a;
+            --chat-bg: #0b1324;
+            --text-color: #ffffff;
+            --text-muted: #94a3b8;
+            --border-color: #1e293b;
+            --accent-color: #10b981;
+            --gold-accent: #f59e0b;
+            --sky-blue: #38bdf8;
+            --my-msg-bg: #065f46;
+            --other-msg-bg: #1e293b;
+            --danger-color: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            height: 100%;
+            height: 100dvh;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow: hidden;
+        }
+
+        .chat-app-wrapper {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            height: 100dvh;
+            width: 100%;
+            max-width: 650px;
+            margin: 0 auto;
+            position: relative;
+            background: var(--chat-bg);
+        }
+
+        /* رأس الشات */
+        .chat-header {
+            background: #0f172a;
+            border-bottom: 1px solid var(--border-color);
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
+            flex-shrink: 0;
+        }
+
+        .header-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-back {
+            color: #94a3b8;
+            font-size: 18px;
+            text-decoration: none;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+        }
+        .btn-back:hover { color: var(--accent-color); }
+
+        .chat-title h2 {
+            font-size: 15px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .chat-status {
+            font-size: 11px;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .chat-status.locked { color: #f87171; }
+
+        .mod-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-mod-action {
+            background: #1e293b;
+            border: 1px solid var(--border-color);
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #fff;
+            transition: all 0.2s;
+        }
+        .btn-mod-action:hover { opacity: 0.9; }
+
+        .btn-lock.locked { background: #b91c1c; border-color: #ef4444; }
+        .btn-lock.unlocked { background: #065f46; border-color: #10b981; }
+
+        /* منطقة المحادثات */
+        .chat-container {
+            flex: 1 1 auto;
+            min-height: 0;
+            background: var(--chat-bg);
+            background-image: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.03), transparent 70%);
+            padding: 16px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .msg-wrapper {
+            display: flex;
+            flex-direction: column;
+            max-width: 82%;
+            position: relative;
+        }
+
+        .msg-wrapper.me { align-self: flex-start; }
+        .msg-wrapper.other { align-self: flex-end; }
+
+        .msg-bubble {
+            padding: 9px 13px;
+            border-radius: 14px;
+            font-size: 14px;
+            line-height: 1.5;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+            word-break: break-word;
+        }
+
+        .msg-wrapper.me .msg-bubble {
+            background: var(--my-msg-bg);
+            color: #ffffff;
+            border-bottom-left-radius: 2px;
+        }
+
+        .msg-wrapper.other .msg-bubble {
+            background: var(--other-msg-bg);
+            color: #f1f5f9;
+            border-bottom-right-radius: 2px;
+        }
+
+        .sender-name {
+            font-size: 11px;
+            font-weight: bold;
+            color: var(--sky-blue);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .badge-tag {
+            font-size: 9px;
+            padding: 1px 5px;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+        .badge-tag.admin { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .badge-tag.mod { background: rgba(56, 189, 248, 0.2); color: #38bdf8; }
+
+        .chat-msg-img {
+            max-width: 240px;
+            max-height: 240px;
+            border-radius: 10px;
+            margin-top: 6px;
+            display: block;
+            cursor: pointer;
+            object-fit: cover;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mention-pill {
+            color: #38bdf8;
+            font-weight: bold;
+            background: rgba(56, 189, 248, 0.15);
+            padding: 1px 6px;
+            border-radius: 6px;
+        }
+
+        /* تفاعلات الرسائل (Reactions) */
+        .reactions-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 6px;
+        }
+
+        .reaction-pill {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 2px 7px;
+            border-radius: 12px;
+            font-size: 11px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: transform 0.15s, background 0.15s;
+        }
+        .reaction-pill:hover { transform: scale(1.08); }
+        .reaction-pill.active {
+            background: rgba(16, 185, 129, 0.25);
+            border-color: var(--accent-color);
+        }
+
+        .msg-footer {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 5px;
+        }
+
+        .btn-react-trigger {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            cursor: pointer;
+            padding: 0 2px;
+            transition: color 0.15s;
+        }
+        .btn-react-trigger:hover { color: var(--gold-accent); }
+
+        .btn-del-msg {
+            background: none;
+            border: none;
+            color: #f87171;
+            font-size: 11px;
+            cursor: pointer;
+            padding: 0 4px;
+            opacity: 0.8;
+        }
+        .btn-del-msg:hover { opacity: 1; }
+
+        /* شريط التفاعلات المنبثق */
+        .emoji-picker-box {
+            position: absolute;
+            bottom: calc(100% + 4px);
+            right: 0;
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 5px 8px;
+            display: none;
+            gap: 6px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.7);
+            z-index: 100;
+            animation: popReaction 0.2s ease-out;
+        }
+        @keyframes popReaction {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .emoji-picker-box span {
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+        .emoji-picker-box span:hover { transform: scale(1.3); }
+
+        /* قائمة المنشن المنبثقة */
+        .mention-dropdown {
+            position: absolute;
+            bottom: 65px;
+            left: 14px;
+            right: 14px;
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            max-height: 180px;
+            overflow-y: auto;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+            z-index: 50;
+        }
+        .mention-item {
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            border-bottom: 1px solid #162238;
+        }
+        .mention-item:hover { background: #111e36; color: var(--sky-blue); }
+
+        /* شريط معاينة الصورة */
+        .image-preview-bar {
+            background: #091224;
+            border-top: 1px solid var(--border-color);
+            padding: 8px 14px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+        .image-preview-thumb {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid var(--accent-color);
+        }
+
+        /* منطقة الإدخال السفلية (المثبتة) */
+        .chat-input-area {
+            background: #0f172a;
+            border-top: 1px solid var(--border-color);
+            padding: 10px 12px;
+            padding-bottom: max(10px, env(safe-area-inset-bottom));
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            position: relative;
+            flex-shrink: 0;
+            z-index: 20;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            background: #070d18;
+            border: 1px solid var(--border-color);
+            color: #ffffff;
+            padding: 11px 14px;
+            border-radius: 24px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .chat-input-area input:focus { border-color: var(--accent-color); }
+
+        .btn-attach {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            transition: color 0.2s;
+        }
+        .btn-attach:hover { color: var(--accent-color); }
+
+        .btn-send {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border: none;
+            color: #ffffff;
+            font-size: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: transform 0.2s;
+        }
+        .btn-send:hover { transform: scale(1.05); }
+
+        .locked-notice {
+            width: 100%;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px dashed #ef4444;
+            color: #fca5a5;
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* Modal عرض الصورة كاملة */
+        .image-modal-lightbox {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            padding: 15px;
+        }
+        .image-modal-lightbox img {
+            max-width: 95%;
+            max-height: 90vh;
+            border-radius: 12px;
+            box-shadow: 0 0 25px rgba(0,0,0,0.8);
+        }
+
+        /* Modal الأعضاء */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 15px;
+        }
+
+        .modal-card {
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 480px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .modal-header {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 15px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .user-row {
+            background: #111e36;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .btn-mute {
+            background: #dc2626;
+            color: #fff;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-unmute {
+            background: #059669;
+            color: #fff;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chat-app-wrapper">
+
+        <!-- 1. شريط العنوان والتحكم في الشات -->
+        <header class="chat-header">
+            <div class="header-info">
+                <a href="{{ url_for('index') }}" class="btn-back" title="العودة">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <div class="chat-title">
+                    <h2><i class="fa-solid fa-comments" style="color: var(--accent-color);"></i> شات رِوَاق التعليمي</h2>
+                    <span class="chat-status {% if chat_settings.is_locked %}locked{% endif %}" id="chatStatusText">
+                        {% if chat_settings.is_locked %}
+                            <i class="fa-solid fa-lock"></i> مغلق بواسطة ({{ chat_settings.locked_by or 'أحد المشرفين' }})
+                        {% else %}
+                            <i class="fa-solid fa-circle-dot" style="font-size: 8px;"></i> متصل ومتاح للجميع
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+
+            {% if is_moderator %}
+                <div class="mod-header-actions">
+                    <button type="button" class="btn-mod-action" onclick="openMembersModal()" style="background:#0284c7;">
+                        <i class="fa-solid fa-users"></i> الأعضاء ({{ all_users|length }})
+                    </button>
+
+                    <form action="{{ url_for('chat_toggle_lock') }}" method="POST" style="margin:0;">
+                        <button type="submit" class="btn-mod-action btn-lock {% if chat_settings.is_locked %}locked{% else %}unlocked{% endif %}">
+                            {% if chat_settings.is_locked %}
+                                <i class="fa-solid fa-lock-open"></i> فتح الشات
+                            {% else %}
+                                <i class="fa-solid fa-lock"></i> قفل الشات
+                            {% endif %}
+                        </button>
+                    </form>
+
+                    <form action="{{ url_for('chat_clear') }}" method="POST" style="margin:0;" onsubmit="return confirm('هل أنت متأكد من تفريغ ومسح جميع رسائل الشات؟');">
+                        <button type="submit" class="btn-mod-action" style="background:#475569;" title="تفريغ الشات">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </form>
+                </div>
+            {% endif %}
+        </header>
+
+        <!-- 2. منطقة عرض الرسائل -->
+        <div class="chat-container" id="chatContainer">
+            {% for msg in messages %}
+                {% set is_me = (msg.user_identifier|string == current_user.identifier|string) %}
+                <div class="msg-wrapper {% if is_me %}me{% else %}other{% endif %}" id="msg-{{ msg.id }}">
+                    <div class="msg-bubble">
+                        {% if not is_me %}
+                            <div class="sender-name">
+                                {{ msg.user_name }}
+                                {% if msg.is_admin %}
+                                    <span class="badge-tag admin">⭐ الإدارة</span>
+                                {% elif msg.is_mod %}
+                                    <span class="badge-tag mod">🛡️ مشرف</span>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+
+                        {% if msg.text %}
+                            <div class="msg-text">{{ msg.text }}</div>
+                        {% endif %}
+
+                        {% if msg.image_url %}
+                            <img src="{{ msg.image_url }}" class="chat-msg-img" onclick="openLightbox('{{ msg.image_url }}')" alt="صورة">
+                        {% endif %}
+
+                        <!-- التفاعلات (Reactions) -->
+                        <div class="reactions-wrap" id="react-wrap-{{ msg.id }}">
+                            {% if msg.reactions %}
+                                {% for emoji, u_list in msg.reactions.items() %}
+                                    {% set reacted = (current_user.identifier|string in u_list) %}
+                                    <span class="reaction-pill {% if reacted %}active{% endif %}" onclick="toggleReact('{{ msg.id }}', '{{ emoji }}')">
+                                        {{ emoji }} {{ u_list|length }}
+                                    </span>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        <!-- شريط التفاعلات المنبثق -->
+                        <div class="emoji-picker-box" id="picker-{{ msg.id }}">
+                            <span onclick="toggleReact('{{ msg.id }}', '👍')">👍</span>
+                            <span onclick="toggleReact('{{ msg.id }}', '❤️')">❤️</span>
+                            <span onclick="toggleReact('{{ msg.id }}', '🤲')">🤲</span>
+                            <span onclick="toggleReact('{{ msg.id }}', '😂')">😂</span>
+                            <span onclick="toggleReact('{{ msg.id }}', '👏')">👏</span>
+                            <span onclick="toggleReact('{{ msg.id }}', '💡')">💡</span>
+                        </div>
+
+                        <div class="msg-footer">
+                            <span>{{ msg.time }}</span>
+                            <button type="button" class="btn-react-trigger" onclick="togglePicker('{{ msg.id }}')" title="تفاعل مع الرسالة">
+                                <i class="fa-regular fa-face-smile"></i>
+                            </button>
+
+                            {% if is_moderator %}
+                                <button type="button" class="btn-del-msg" onclick="deleteMessage('{{ msg.id }}')" title="حذف الرسالة">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- 3. قائمة المنشن المنبثقة (@Mentions) -->
+        <div id="mentionDropdown" class="mention-dropdown"></div>
+
+        <!-- 4. شريط معاينة الصورة قبل الإرسال -->
+        <div id="imagePreviewBar" class="image-preview-bar">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <img id="imagePreviewImg" class="image-preview-thumb" src="" alt="معاينة">
+                <span style="font-size:12px; color:var(--sky-blue);" id="previewText">صورة جاهزة للإرسال</span>
+            </div>
+            <button type="button" onclick="cancelImageUpload()" style="background:none; border:none; color:#ef4444; font-size:18px; cursor:pointer;">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- 5. منطقة كتابة وإرسال الرسائل (مثبتة بالأسفل دائماً) -->
+        <div class="chat-input-area" id="chatInputArea">
+            {% set user_id_str = current_user.identifier|string %}
+            {% if user_id_str in muted_users %}
+                <div class="locked-notice">
+                    <i class="fa-solid fa-volume-xmark"></i> تم كتم حسابك من قِبل المشرفين ولا يمكنك إرسال رسائل.
+                </div>
+            {% elif chat_settings.is_locked and not is_moderator %}
+                <div class="locked-notice" id="studentLockedNotice">
+                    <i class="fa-solid fa-lock"></i> عذراً، الشات مغلق حالياً بواسطة المشرف ({{ chat_settings.locked_by or 'أحد المشرفين' }}).
+                </div>
+            {% else %}
+                <input type="file" id="imageFileInput" accept="image/*" style="display:none;" onchange="handleImageSelected(this)">
+                <button type="button" class="btn-attach" onclick="document.getElementById('imageFileInput').click()" title="إرفاق صورة">
+                    <i class="fa-solid fa-image"></i>
+                </button>
+
+                <input type="text" id="messageInput" placeholder="اكتب رسالتك أو سؤالك (استخدم @ للمنشن)..." autocomplete="off" oninput="handleInputMentions(this)">
+                
+                <button type="button" class="btn-send" id="sendBtn" onclick="sendMessage()">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <!-- 6. Modal معاينة الصورة بملء الشاشة (Lightbox) -->
+    <div id="imageLightbox" class="image-modal-lightbox" onclick="closeLightbox()">
+        <img id="lightboxImg" src="" alt="صورة مكبرة">
+    </div>
+
+    <!-- 7. نافذة أعضاء المنصة للمشرفين فقط -->
+    {% if is_moderator %}
+        <div id="membersModal" class="modal-overlay">
+            <div class="modal-card">
+                <div class="modal-header">
+                    <h3 style="font-size:15px; color:#38bdf8;"><i class="fa-solid fa-users"></i> المسجلون في المنصة ({{ all_users|length }})</h3>
+                    <button type="button" onclick="closeMembersModal()" style="background:none; border:none; color:#94a3b8; font-size:18px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                
+                <div style="padding:10px 15px 0 15px;">
+                    <input type="text" id="searchMembers" placeholder="🔍 ابحث عن طالب بالاسم أو الرقم..." onkeyup="filterMembers()" style="width:100%; padding:9px 12px; background:#070d18; border:1px solid var(--border-color); color:#fff; border-radius:8px; outline:none; font-size:13px;">
+                </div>
+
+                <div class="modal-body" id="membersList">
+                    {% for u in all_users %}
+                        {% set u_id = u.identifier|string %}
+                        {% set is_u_muted = u_id in muted_users %}
+                        {% set is_u_mod = u_id in moderators %}
+                        <div class="user-row member-card">
+                            <div>
+                                <strong class="m-name" style="font-size:13px; color:#fff;">{{ u.name }}</strong>
+                                {% if is_u_mod %}<span style="color:#38bdf8; font-size:10px; margin-right:4px;">🛡️ مشرف</span>{% endif %}
+                                {% if is_u_muted %}<span style="color:#f87171; font-size:10px; margin-right:4px;">🔇 مكتوم</span>{% endif %}
+                                <div class="m-id" style="font-size:11px; color:var(--text-muted);">📱 {{ u.identifier }}</div>
+                            </div>
+                            
+                            <form action="{{ url_for('chat_toggle_mute', user_identifier=u_id) }}" method="POST" style="margin:0;">
+                                {% if is_u_muted %}
+                                    <button type="submit" class="btn-unmute"><i class="fa-solid fa-volume-high"></i> فك الكتم</button>
+                                {% else %}
+                                    <button type="submit" class="btn-mute" onsubmit="return confirm('كتم هذا الطالب من إرسال رسائل في الشات؟');"><i class="fa-solid fa-volume-xmark"></i> كتم</button>
+                                {% endif %}
+                            </form>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <script>
+        const chatContainer = document.getElementById('chatContainer');
+        const currentUserId = "{{ current_user.identifier|string }}";
+        const isMod = {{ 'true' if is_moderator else 'false' }};
+        
+        let pendingImageData = null;
+        let activePickerId = null;
+
+        const membersList = [
+            {% if all_users %}
+                {% for u in all_users %}
+                    { name: "{{ u.name }}", id: "{{ u.identifier }}" },
+                {% endfor %}
+            {% endif %}
+        ];
+
+        function scrollToBottom() {
+            if (chatContainer) {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+        }
+        window.addEventListener('DOMContentLoaded', scrollToBottom);
+
+        // التفاعلات
+        function togglePicker(msgId) {
+            const picker = document.getElementById(`picker-${msgId}`);
+            if (!picker) return;
+            if (activePickerId && activePickerId !== msgId) {
+                const prev = document.getElementById(`picker-${activePickerId}`);
+                if (prev) prev.style.display = 'none';
+            }
+            picker.style.display = (picker.style.display === 'flex') ? 'none' : 'flex';
+            activePickerId = (picker.style.display === 'flex') ? msgId : null;
+        }
+
+        document.addEventListener('click', (e) => {
+            if (activePickerId && !e.target.closest('.emoji-picker-box') && !e.target.closest('.btn-react-trigger')) {
+                const picker = document.getElementById(`picker-${activePickerId}`);
+                if (picker) picker.style.display = 'none';
+                activePickerId = null;
+            }
+        });
+
+        async function toggleReact(msgId, emoji) {
+            const picker = document.getElementById(`picker-${msgId}`);
+            if (picker) picker.style.display = 'none';
+            activePickerId = null;
+
+            try {
+                const res = await fetch('/api/chat/react', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ msg_id: msgId, emoji: emoji })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    renderReactions(msgId, data.reactions);
+                }
+            } catch (err) {
+                console.error('Reaction error:', err);
+            }
+        }
+
+        function renderReactions(msgId, reactions) {
+            const wrap = document.getElementById(`react-wrap-${msgId}`);
+            if (!wrap) return;
+            wrap.innerHTML = '';
+            for (const [em, list] of Object.entries(reactions || {})) {
+                if (!list || list.length === 0) continue;
+                const isReacted = list.includes(currentUserId);
+                const pill = document.createElement('span');
+                pill.className = `reaction-pill ${isReacted ? 'active' : ''}`;
+                pill.innerHTML = `${em} ${list.length}`;
+                pill.onclick = () => toggleReact(msgId, em);
+                wrap.appendChild(pill);
+            }
+        }
+
+        // حذف الرسائل للمشرفين
+        async function deleteMessage(msgId) {
+            if (!confirm('هل أنت متأكد من رغبتك في حذف هذه الرسالة؟')) return;
+            try {
+                const res = await fetch(`/api/chat/delete/${msgId}`, { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    const el = document.getElementById(`msg-${msgId}`);
+                    if (el) el.remove();
+                } else {
+                    alert('تعذر حذف الرسالة');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // رفع الصور
+        async function handleImageSelected(input) {
+            if (!input.files || !input.files[0]) return;
+            const file = input.files[0];
+            if (file.size > 2 * 1024 * 1024) {
+                alert('حجم الصورة كبير، الحد الأقصى 2MB');
+                input.value = '';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            const previewBar = document.getElementById('imagePreviewBar');
+            const previewText = document.getElementById('previewText');
+            previewBar.style.display = 'flex';
+            previewText.innerText = 'جاري معالجة الصورة...';
+
+            try {
+                const res = await fetch('/api/chat/upload_image', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.success) {
+                    pendingImageData = data.image_url;
+                    document.getElementById('imagePreviewImg').src = data.image_url;
+                    previewText.innerText = 'صورة جاهزة للإرسال ✅';
+                } else {
+                    alert(data.message || 'فشل رفع الصورة');
+                    cancelImageUpload();
+                }
+            } catch (err) {
+                alert('تعذر رفع الصورة');
+                cancelImageUpload();
+            }
+        }
+
+        function cancelImageUpload() {
+            pendingImageData = null;
+            const fileInput = document.getElementById('imageFileInput');
+            if (fileInput) fileInput.value = '';
+            document.getElementById('imagePreviewBar').style.display = 'none';
+        }
+
+        function openLightbox(url) {
+            const lb = document.getElementById('imageLightbox');
+            document.getElementById('lightboxImg').src = url;
+            lb.style.display = 'flex';
+        }
+
+        function closeLightbox() {
+            document.getElementById('imageLightbox').style.display = 'none';
+        }
+
+        // المنشن (@)
+        function handleInputMentions(input) {
+            const val = input.value;
+            const atIndex = val.lastIndexOf('@');
+            const dropdown = document.getElementById('mentionDropdown');
+
+            if (atIndex !== -1 && (atIndex === 0 || val[atIndex - 1] === ' ')) {
+                const query = val.slice(atIndex + 1).toLowerCase();
+                const matched = membersList.filter(m => m.name.toLowerCase().includes(query)).slice(0, 5);
+
+                if (matched.length > 0) {
+                    dropdown.innerHTML = '';
+                    matched.forEach(m => {
+                        const item = document.createElement('div');
+                        item.className = 'mention-item';
+                        item.innerHTML = `<i class="fa-solid fa-at" style="color:var(--accent-color);"></i> <strong>${m.name}</strong>`;
+                        item.onclick = () => selectMention(m.name, atIndex);
+                        dropdown.appendChild(item);
+                    });
+                    dropdown.style.display = 'flex';
+                    return;
+                }
+            }
+            dropdown.style.display = 'none';
+        }
+
+        function selectMention(name, atIndex) {
+            const input = document.getElementById('messageInput');
+            if (!input) return;
+            const val = input.value;
+            input.value = val.slice(0, atIndex) + `@${name} ` + val.slice(input.selectionStart);
+            document.getElementById('mentionDropdown').style.display = 'none';
+            input.focus();
+        }
+
+        function formatMentions(text) {
+            if (!text) return '';
+            return text.replace(/@([^\s]+)/g, '<span class="mention-pill">@$1</span>');
+        }
+
+        // إرسال الرسالة
+        async function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const text = messageInput ? messageInput.value.trim() : '';
+            const img = pendingImageData;
+
+            if (!text && !img) return;
+
+            if (messageInput) messageInput.value = '';
+            cancelImageUpload();
+            const dropdown = document.getElementById('mentionDropdown');
+            if (dropdown) dropdown.style.display = 'none';
+            if (messageInput) messageInput.focus();
+
+            try {
+                const res = await fetch('/api/chat/send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: text, image_url: img })
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    appendMessage(data.message, true);
+                    scrollToBottom();
+                } else {
+                    alert(data.message || 'تعذر إرسال الرسالة');
+                }
+            } catch (err) {
+                console.error('Error sending message:', err);
+            }
+        }
+
+        document.addEventListener('keypress', (e) => {
+            if (e.target && e.target.id === 'messageInput' && e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // إضافة الرسالة في الواجهة
+        function appendMessage(msg, isMe) {
+            if (document.getElementById(`msg-${msg.id}`)) {
+                renderReactions(msg.id, msg.reactions);
+                return;
+            }
+
+            const wrapper = document.createElement('div');
+            wrapper.className = `msg-wrapper ${isMe ? 'me' : 'other'}`;
+            wrapper.id = `msg-${msg.id}`;
+
+            let senderHtml = '';
+            if (!isMe) {
+                let badge = '';
+                if (msg.is_admin) badge = '<span class="badge-tag admin">⭐ الإدارة</span>';
+                else if (msg.is_mod) badge = '<span class="badge-tag mod">🛡️ مشرف</span>';
+                senderHtml = `<div class="sender-name">${msg.user_name} ${badge}</div>`;
+            }
+
+            let textHtml = msg.text ? `<div class="msg-text">${formatMentions(msg.text)}</div>` : '';
+            let imageHtml = msg.image_url ? `<img src="${msg.image_url}" class="chat-msg-img" onclick="openLightbox('${msg.image_url}')" alt="صورة">` : '';
+
+            let delBtnHtml = '';
+            if (isMod) {
+                delBtnHtml = `
+                    <button type="button" class="btn-del-msg" onclick="deleteMessage('${msg.id}')" title="حذف الرسالة">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                `;
+            }
+
+            wrapper.innerHTML = `
+                <div class="msg-bubble">
+                    ${senderHtml}
+                    ${textHtml}
+                    ${imageHtml}
+                    <div class="reactions-wrap" id="react-wrap-${msg.id}"></div>
+                    <div class="emoji-picker-box" id="picker-${msg.id}">
+                        <span onclick="toggleReact('${msg.id}', '👍')">👍</span>
+                        <span onclick="toggleReact('${msg.id}', '❤️')">❤️</span>
+                        <span onclick="toggleReact('${msg.id}', '🤲')">🤲</span>
+                        <span onclick="toggleReact('${msg.id}', '😂')">😂</span>
+                        <span onclick="toggleReact('${msg.id}', '👏')">👏</span>
+                        <span onclick="toggleReact('${msg.id}', '💡')">💡</span>
+                    </div>
+                    <div class="msg-footer">
+                        <span>${msg.time}</span>
+                        <button type="button" class="btn-react-trigger" onclick="togglePicker('${msg.id}')" title="تفاعل مع الرسالة">
+                            <i class="fa-regular fa-face-smile"></i>
+                        </button>
+                        ${delBtnHtml}
+                    </div>
+                </div>
+            `;
+
+            chatContainer.appendChild(wrapper);
+            renderReactions(msg.id, msg.reactions);
+        }
+
+        // المزامنة الحية وتحديث حالة القفل للطلاب لحظياً
+        setInterval(async () => {
+            try {
+                const res = await fetch('/api/chat/messages');
+                if (!res.ok) return;
+                const data = await res.json();
+                
+                // 1. تحديث نص الحالة في الشريط العلوي
+                const statusText = document.getElementById('chatStatusText');
+                if (statusText) {
+                    if (data.is_locked) {
+                        statusText.className = 'chat-status locked';
+                        statusText.innerHTML = `<i class="fa-solid fa-lock"></i> مغلق بواسطة (${data.locked_by || 'أحد المشرفين'})`;
+                    } else {
+                        statusText.className = 'chat-status';
+                        statusText.innerHTML = `<i class="fa-solid fa-circle-dot" style="font-size: 8px;"></i> متصل ومتاح للجميع`;
+                    }
+                }
+
+                // 2. تحديث شريط الإدخال للطلاب لحظياً
+                if (!isMod) {
+                    const inputArea = document.getElementById('chatInputArea');
+                    const hasLockedNotice = document.getElementById('studentLockedNotice');
+                    if (data.is_locked && !hasLockedNotice) {
+                        inputArea.innerHTML = `
+                            <div class="locked-notice" id="studentLockedNotice">
+                                <i class="fa-solid fa-lock"></i> عذراً، الشات مغلق حالياً بواسطة المشرف (${data.locked_by || 'أحد المشرفين'}).
+                            </div>
+                        `;
+                    } else if (!data.is_locked && hasLockedNotice) {
+                        inputArea.innerHTML = `
+                            <input type="file" id="imageFileInput" accept="image/*" style="display:none;" onchange="handleImageSelected(this)">
+                            <button type="button" class="btn-attach" onclick="document.getElementById('imageFileInput').click()" title="إرفاق صورة">
+                                <i class="fa-solid fa-image"></i>
+                            </button>
+                            <input type="text" id="messageInput" placeholder="اكتب رسالتك أو سؤالك (استخدم @ للمنشن)..." autocomplete="off" oninput="handleInputMentions(this)">
+                            <button type="button" class="btn-send" id="sendBtn" onclick="sendMessage()">
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        `;
+                    }
+                }
+
+                // 3. جلب الرسائل الجديدة والتفاعلات
+                const msgs = data.messages || [];
+                let hasNew = false;
+
+                msgs.forEach(msg => {
+                    const existing = document.getElementById(`msg-${msg.id}`);
+                    if (!existing) {
+                        const isMe = (String(msg.user_identifier) === currentUserId);
+                        appendMessage(msg, isMe);
+                        hasNew = true;
+                    } else {
+                        renderReactions(msg.id, msg.reactions);
+                    }
+                });
+
+                if (hasNew) scrollToBottom();
+            } catch (e) {}
+        }, 3000);
+
+        // دوال الأعضاء
+        function openMembersModal() {
+            const m = document.getElementById('membersModal');
+            if (m) m.style.display = 'flex';
+        }
+        function closeMembersModal() {
+            const m = document.getElementById('membersModal');
+            if (m) m.style.display = 'none';
+        }
+        function filterMembers() {
+            const val = document.getElementById('searchMembers').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.member-card');
+            cards.forEach(c => {
+                const name = c.querySelector('.m-name').innerText.toLowerCase();
+                const id = c.querySelector('.m-id').innerText.toLowerCase();
+                c.style.display = (name.includes(val) || id.includes(val)) ? 'flex' : 'none';
+            });
+        }
+    </script>
+</body>
+</html>

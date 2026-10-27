@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أدعية هامة - منصة سهلتهالك</title>
+    <!-- أيقونات FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #ffffff;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --accent-color: #38bdf8;
+            --gold-color: #f59e0b;
+            --shadow: rgba(0, 0, 0, 0.4);
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --accent-color: #0284c7;
+            --gold-color: #d97706;
+            --shadow: rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Tahoma, 'Segoe UI', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 15px;
+            text-align: center;
+            min-height: 100vh;
+        }
+
+        .top-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 650px;
+            margin: 0 auto 20px auto;
+            padding: 10px 5px;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--border-color);
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .btn-back:hover {
+            opacity: 0.9;
+        }
+
+        .theme-toggle-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .header-title {
+            margin-bottom: 25px;
+        }
+
+        .header-title h1 {
+            color: var(--gold-color);
+            font-size: 22px;
+            margin-bottom: 6px;
+        }
+
+        .header-title p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        .dua-card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 18px;
+            border-right: 5px solid var(--accent-color);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            border-left: 1px solid var(--border-color);
+            text-align: right;
+            box-shadow: 0 4px 12px var(--shadow);
+            position: relative;
+        }
+
+        .dua-card h3 {
+            color: var(--gold-color);
+            font-size: 17px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .dua-card p {
+            font-size: 16px;
+            line-height: 1.9;
+            color: var(--text-color);
+            font-family: 'Amiri', 'Traditional Arabic', Tahoma, sans-serif;
+            background: var(--bg-color);
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px dashed var(--border-color);
+            margin-top: 10px;
+        }
+
+        .copy-btn {
+            background: var(--border-color);
+            color: var(--accent-color);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent-color);
+            color: #0f172a;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-navbar">
+        <a href="{{ url_for('hasanat') }}" class="btn-back"><i class="fa-solid fa-arrow-right"></i> العودة لقسم حسانات</a>
+        <button class="theme-toggle-btn" onclick="toggleTheme()" aria-label="تبديل الثيم">
+            <i class="fa-solid fa-moon" id="theme-icon"></i>
+        </button>
+    </div>
+
+    <div class="header-title">
+        <h1><i class="fa-solid fa-hands-praying"></i> أدعية هامة للمسلم</h1>
+        <p>مجموعة من الأدعية الجامعة للدنيا والأخرة وطلب العلم والتيسير</p>
+    </div>
+
+    <div class="container">
+        <!-- الأدعية المضافة ديناميكياً من الأدمن -->
+        {% if ad3yah %}
+            {% for item in ad3yah %}
+                <div class="dua-card">
+                    <h3>
+                        <span><i class="fa-solid fa-kaaba"></i> {{ item.title }}</span>
+                        <button class="copy-btn" onclick="copyDua(this, '{{ item.content | replace("'", "\\'") }}')">
+                            <i class="fa-solid fa-copy"></i> نسخ
+                        </button>
+                    </h3>
+                    <p>"{{ item.content }}"</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- الأدعية الأساسية الثابتة -->
+        <div class="dua-card">
+            <h3>
+                <span><i class="fa-solid fa-book-open"></i> دعاء طلب العلم والفهم</span>
+                <button class="copy-btn" onclick="copyDua(this, 'اللَّهُمَّ إنِّي أسْأَلُكَ عِلْمًا نَافِعًا، وَرِزْقًا طَيِّبًا، وَعَمَلًا مُتَقَبَّلًا.')">
+                    <i class="fa-solid fa-copy"></i> نسخ
+                </button>
+            </h3>
+            <p>"اللَّهُمَّ إنِّي أسْأَلُكَ عِلْمًا نَافِعًا، وَرِزْقًا طَيِّبًا، وَعَمَلًا مُتَقَبَّلًا."</p>
+        </div>
+
+        <div class="dua-card">
+            <h3>
+                <span><i class="fa-solid fa-feather-pointed"></i> دعاء التيسير وتسهيل الصعاب</span>
+                <button class="copy-btn" onclick="copyDua(this, 'اللَّهُمَّ لا سَهْلَ إِلاَّ ما جَعَلْتَهُ سَهْلًا، وأَنْتَ تَجْعَلُ الحَزْنَ إِذَا شِئْتَ سَهْلًا.')">
+                    <i class="fa-solid fa-copy"></i> نسخ
+                </button>
+            </h3>
+            <p>"اللَّهُمَّ لا سَهْلَ إِلاَّ ما جَعَلْتَهُ سَهْلًا، وأَنْتَ تَجْعَلُ الحَزْنَ إِذَا شِئْتَ سَهْلًا."</p>
+        </div>
+
+        <div class="dua-card">
+            <h3>
+                <span><i class="fa-solid fa-heart"></i> دعاء راحة البال والفرج</span>
+                <button class="copy-btn" onclick="copyDua(this, 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ.')">
+                    <i class="fa-solid fa-copy"></i> نسخ
+                </button>
+            </h3>
+            <p>"رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ."</p>
+        </div>
+    </div>
+
+    <script>
+        function copyDua(btn, text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> تم النسخ';
+                btn.style.background = '#16a34a';
+                btn.style.color = '#fff';
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.style.background = '';
+                    btn.style.color = '';
+                }, 2000);
+            });
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('theme-icon');
+            if (icon) {
+                icon.className = theme === 'light' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        });
+    </script>
+</body>
+</html>

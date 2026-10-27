@@ -1,0 +1,5 @@
+Flask
+upstash-redis
+requests
+gunicorn
+python-dotenv

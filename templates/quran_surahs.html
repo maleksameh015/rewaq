@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>القرآن الكريم بالسور</title>
+    <style>
+        body { font-family: sans-serif; background-color: #0f172a; color: #fff; margin: 0; padding: 20px; text-align: center; }
+        .header { margin-bottom: 30px; }
+        .back-btn { display: inline-block; margin-bottom: 20px; color: #38bdf8; text-decoration: none; font-weight: bold; }
+        .surah-card { background: #1e293b; border-radius: 10px; padding: 15px; margin: 10px auto; max-width: 500px; text-align: right; border: 1px solid #334155; }
+        .surah-card h3 { margin: 0 0 5px 0; color: #38bdf8; }
+        .surah-card a { color: #4ade80; text-decoration: none; font-weight: bold; float: left; }
+    </style>
+</head>
+<body>
+    <a href="/hasanat" class="back-btn">← العودة لقسم حسانات</a>
+    <div class="header">
+        <h1>القرآن الكريم بالسور</h1>
+        <p>اختر السورة للاستماع أو القراءة</p>
+    </div>
+    <div id="surahs-container">
+        <p>جاري تحميل سور القرآن الكريم...</p>
+    </div>
+
+    <script>
+        fetch('https://api.alquran.cloud/v1/surah')
+            .then(res => res.json())
+            .then(data => {
+                const container = document.getElementById('surahs-container');
+                container.innerHTML = '';
+                data.data.forEach(surah => {
+                    const card = document.createElement('div');
+                    card.className = 'surah-card';
+                    card.innerHTML = `
+                        <h3>${surah.number}. سورة ${surah.name}</h3>
+                        <p style="margin: 0; font-size: 0.9em; color: #94a3b8;">عدد الآيات: ${surah.numberOfAyahs} | ${surah.revelationType === 'Meccan' ? 'مكية' : 'مدنية'}</p>
+                        <a href="https://quran.com/${surah.number}" target="_blank">قراءة / استماع ↗</a>
+                        <div style="clear:both;"></div>
+                    `;
+                    container.appendChild(card);
+                });
+            })
+            .catch(() => {
+                document.getElementById('surahs-container').innerHTML = '<p>تعذر تحميل قائمة السور، تحقق من اتصالك بالإنترنت.</p>';
+            });
+    </script>
+</body>
+</html>

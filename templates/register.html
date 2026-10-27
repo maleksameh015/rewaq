@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب جديد - منصة رِوَاق للعلوم الشرعية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Tahoma, 'Segoe UI', sans-serif; }
+        body { 
+            background-color: #070d18; 
+            color: #ffffff; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            padding: 20px; 
+        }
+        .card { 
+            background: #111a2e; 
+            border: 1px solid #1e2d4a; 
+            border-radius: 16px; 
+            padding: 32px 24px; 
+            width: 100%; 
+            max-width: 420px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6); 
+            text-align: center; 
+        }
+        .card h2 { 
+            color: #10b981; 
+            font-size: 22px; 
+            margin-bottom: 8px; 
+            font-weight: bold;
+        }
+        .subtitle {
+            color: #94a3b8;
+            font-size: 13px;
+            margin-bottom: 24px;
+        }
+        .form-group {
+            text-align: right;
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            color: #cbd5e1;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+        .input-box { 
+            width: 100%; 
+            padding: 13px 14px; 
+            background: #091220; 
+            border: 1px solid #1e2d4a; 
+            color: #fff; 
+            border-radius: 10px; 
+            font-size: 14px; 
+            outline: none; 
+            transition: border-color 0.25s ease; 
+        }
+        .input-box:focus { border-color: #10b981; }
+        .hint {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn { 
+            width: 100%; 
+            padding: 14px; 
+            background: #10b981; 
+            border: none; 
+            color: #ffffff; 
+            font-weight: bold; 
+            font-size: 15px; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            margin-top: 10px; 
+            transition: background 0.2s ease; 
+        }
+        .btn:hover { background: #059669; }
+        .link-text { margin-top: 22px; font-size: 13px; color: #94a3b8; }
+        .link-text a { color: #38bdf8; text-decoration: none; font-weight: bold; }
+        .link-text a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>إنشاء حساب جديد</h2>
+        <p class="subtitle">انضم إلى مجتمع طلاب العلم في منصة رِوَاق</p>
+        {% if first_time %}
+        <div role="status" style="background:#063b32;border:1px solid #10b981;color:#d1fae5;padding:12px;border-radius:10px;margin-bottom:18px;font-size:13px;line-height:1.8;">
+            يبدو أن رقم الهاتف ده مش مسجل عندنا. أنشئ حسابًا جديدًا أولًا، وبعدها هتقدر تسجل دخولك.
+        </div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('register') }}">
+            <div class="form-group">
+                <label>الاسم بالكامل</label>
+                <input 
+                    type="text" 
+                    name="name" 
+                    class="input-box" 
+                    placeholder="اكتب اسمك الثلاثي بالعربي" 
+                    pattern="^[\u0600-\u06FF\s]+$" 
+                    title="يجب كتابة الاسم باللغة العربية فقط بدون أي حروف إنجليزية" 
+                    required>
+                <div class="hint"><i class="fa-solid fa-circle-info"></i> يجب كتابة الاسم باللغة العربية فقط</div>
+            </div>
+
+            <div class="form-group">
+                <label>رقم الهاتف</label>
+                <input 
+                    type="tel" 
+                    name="identifier" 
+                    class="input-box" 
+                    placeholder="010XXXXXXXX" 
+                    value="{{ prefill_identifier|default('') }}"
+                    inputmode="numeric" 
+                    pattern="^[0-9]+$" 
+                    title="يجب كتابة الرقم بالأرقام الإنجليزية (0-9) فقط" 
+                    required>
+                <div class="hint"><i class="fa-solid fa-circle-info"></i> اكتب الرقم بالأرقام الإنجليزية (0-9) فقط</div>
+            </div>
+
+            <div class="form-group">
+                <label>كلمة المرور</label>
+                <input 
+                    type="password" 
+                    name="password" 
+                    class="input-box" 
+                    placeholder="اختر كلمة مرور" 
+                    required>
+            </div>
+
+            <button type="submit" class="btn">تسجيل حساب</button>
+        </form>
+        <p class="link-text">لديك حساب بالفعل؟ <a href="{{ url_for('login') }}">سجل دخولك</a></p>
+    </div>
+</body>
+</html>

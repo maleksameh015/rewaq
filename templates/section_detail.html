@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ section_info.name }} - منصة رِوَاق للعلوم الشرعية</title>
+    <!-- أيقونات FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #070d18;
+            --card-bg: #0f172a;
+            --text-color: #ffffff;
+            --text-muted: #94a3b8;
+            --border-color: #1e293b;
+            --accent-color: #10b981;
+            --gold-accent: #f59e0b;
+            --sky-blue: #38bdf8;
+            --shadow: rgba(0, 0, 0, 0.5);
+            --item-bg: #111e36;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+        }
+
+        body { 
+            background-color: var(--bg-color); 
+            background-image: radial-gradient(circle at 50% 10%, rgba(16, 185, 129, 0.08), transparent 40%);
+            color: var(--text-color); 
+            padding: 15px; 
+            min-height: 100vh; 
+        }
+
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+        }
+
+        .top-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .btn-back { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px; 
+            background: #1e293b; 
+            color: var(--text-color); 
+            padding: 8px 16px; 
+            border-radius: 10px; 
+            text-decoration: none; 
+            font-weight: bold; 
+            font-size: 13px; 
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+        .btn-back:hover { border-color: var(--accent-color); color: var(--accent-color); }
+
+        .section-header-box {
+            background: var(--card-bg);
+            border: 1.5px solid rgba(16, 185, 129, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px var(--shadow);
+        }
+
+        .section-header-box i {
+            font-size: 34px;
+            color: var(--accent-color);
+            margin-bottom: 8px;
+        }
+
+        .section-header-box h1 {
+            font-size: 22px;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+
+        .section-header-box p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* شريط التبويبات الثلاثة (شروحات - مذكرات - امتحانات) */
+        .tabs-header {
+            display: flex;
+            background: #091224;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 5px;
+            margin-bottom: 20px;
+            gap: 5px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px 6px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .tab-btn.active {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+
+        .tab-btn .badge {
+            background: #1e293b;
+            color: #ffffff;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* كروت المحاضرات */
+        .lecture-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 16px;
+            text-align: right;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .lecture-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .lecture-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .video-container {
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #000;
+            margin-bottom: 12px;
+        }
+
+        .video-container video, 
+        .video-container iframe {
+            width: 100%;
+            height: 220px;
+            border: none;
+            display: block;
+        }
+
+        /* مشغل الريكورد الصوتي */
+        .audio-player-box {
+            background: #091322;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .audio-player-box label {
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--gold-accent);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .audio-player-box audio {
+            width: 100%;
+            height: 38px;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        /* زرار تأكيد المشاهدة */
+        .watch-btn {
+            width: 100%;
+            padding: 11px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .watch-btn.not-watched {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
+        }
+
+        .watch-btn.watched {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid #10b981;
+            cursor: default;
+        }
+
+        /* كروت المذكرات */
+        .note-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .note-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .note-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .btn-note {
+            background: #6366f1;
+            color: #ffffff;
+            padding: 8px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* كروت الامتحانات */
+        .exam-card {
+            background: linear-gradient(135deg, #1a1e2e, #111827);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .exam-info strong {
+            font-size: 14px;
+            color: #ffffff;
+        }
+
+        .btn-exam {
+            background: var(--gold-accent);
+            color: #0b1329;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 13px;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .empty-msg {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+            padding: 35px 15px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px dashed var(--border-color);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="top-navbar">
+            <a href="{{ url_for('index') }}" class="btn-back">
+                <i class="fa-solid fa-arrow-right"></i> العودة للرئيسية
+            </a>
+            <span style="color: var(--gold-accent); font-weight: bold; font-size: 14px;">
+                <i class="fa-solid fa-mosque"></i> منصة رِوَاق
+            </span>
+        </div>
+
+        <!-- رأس القسم -->
+        <div class="section-header-box">
+            <i class="fa-solid {{ section_info.icon }}"></i>
+            <h1>{{ section_info.name }}</h1>
+            <p>{{ section_info.desc }}</p>
+        </div>
+
+        <!-- أزرار التبديل بين الأقسام الثلاثة -->
+        <div class="tabs-header">
+            <button class="tab-btn active" onclick="switchTab('lectures', this)">
+                <i class="fa-solid fa-video"></i> الشروحات
+                <span class="badge">{{ lectures|length }}</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('notes', this)">
+                <i class="fa-solid fa-file-pdf"></i> المذكرات
+                <span class="badge">{{ notes|length }}</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('exams', this)">
+                <i class="fa-solid fa-clipboard-question"></i> الاختبارات
+                <span class="badge">{{ exams|length }}</span>
+            </button>
+        </div>
+
+        <!-- 1. تبويب الشروحات والمحاضرات -->
+        <div id="tab-lectures" class="tab-content active">
+            {% if lectures %}
+                {% for lec in lectures %}
+                    <div class="lecture-card">
+                        <div class="lecture-title">
+                            <i class="fa-solid fa-play-circle" style="color: var(--accent-color);"></i>
+                            {{ lec.title }}
+                        </div>
+
+                        {% if lec.desc %}
+                            <div class="lecture-desc">{{ lec.desc }}</div>
+                        {% endif %}
+
+                        <!-- مشغل الفيديو (إذا كان متوفراً) -->
+                        {% if lec.video_url %}
+                            <div class="video-container">
+                                {% if 'youtube.com' in lec.video_url or 'youtu.be' in lec.video_url %}
+                                    {% set yt_id = lec.video_url.split('v=')[1].split('&')[0] if 'v=' in lec.video_url else lec.video_url.split('youtu.be/')[1].split('?')[0] %}
+                                    <iframe src="https://www.youtube.com/embed/{{ yt_id }}" allowfullscreen></iframe>
+                                {% else %}
+                                    <video src="{{ lec.video_url }}" controls preload="metadata"></video>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+
+                        <!-- مشغل الريكورد الصوتي للدرس -->
+                        {% if lec.audio_url %}
+                            <div class="audio-player-box">
+                                <label><i class="fa-solid fa-microphone-lines"></i> الاستماع للتسجيل الصوتي للمحاضرة (ريكورد):</label>
+                                <audio controls preload="none">
+                                    <source src="{{ lec.audio_url }}">
+                                    متصفحك لا يدعم مشغل الصوت، <a href="{{ lec.audio_url }}" target="_blank" style="color:var(--sky-blue);">اضغط هنا للفتح</a>
+                                </audio>
+                            </div>
+                        {% endif %}
+
+                        <!-- زرار تأكيد المشاهدة وتسجيل الحضور -->
+                        {% if lec.is_watched %}
+                            <button class="watch-btn watched" disabled>
+                                <i class="fa-solid fa-circle-check"></i> تم إتمام مشاهدة الدرس بنجاح
+                            </button>
+                        {% else %}
+                            <button class="watch-btn not-watched" id="btn-{{ lec.id }}" onclick="markWatched('{{ lec.id }}')">
+                                <i class="fa-solid fa-check"></i> تأكيد إتمام المشاهدة (تسجيل الحضور)
+                            </button>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-msg">
+                    <i class="fa-solid fa-video-slash" style="font-size: 30px; margin-bottom: 8px; display: block;"></i>
+                    لم تتم إضافة محاضرات في هذا القسم بعد.
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- 2. تبويب المذكرات والملخصات -->
+        <div id="tab-notes" class="tab-content">
+            {% if notes %}
+                {% for n in notes %}
+                    <div class="note-card">
+                        <div class="note-info">
+                            <div class="note-icon">
+                                <i class="fa-solid fa-file-pdf"></i>
+                            </div>
+                            <div>
+                                <strong style="font-size: 14px; color: #fff;">{{ n.title }}</strong><br>
+                                <small style="color: var(--text-muted);">تاريخ الإضافة: {{ n.date }}</small>
+                            </div>
+                        </div>
+                        <a href="{{ n.link }}" target="_blank" class="btn-note">
+                            <i class="fa-solid fa-download"></i> فتح المذكرة
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-msg">
+                    <i class="fa-solid fa-book-open" style="font-size: 30px; margin-bottom: 8px; display: block; color:#818cf8;"></i>
+                    لا توجد مذكرات أو ملخصات مرفوعة لهذا القسم حتى الآن.
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- 3. تبويب الاختبارات -->
+        <div id="tab-exams" class="tab-content">
+            {% if exams %}
+                {% for ex in exams %}
+                    <div class="exam-card">
+                        <div class="exam-info">
+                            <strong>{{ ex.title }}</strong><br>
+                            {% if ex.type == 'external' %}
+                                <small style="color: var(--sky-blue);"><i class="fa-solid fa-arrow-up-right-from-square"></i> اختبار برابط خارجي</small>
+                            {% else %}
+                                <small style="color: var(--text-muted);"><i class="fa-solid fa-list-check"></i> عدد الأسئلة: {{ ex.questions|length }} سؤال</small>
+                            {% endif %}
+                        </div>
+                        <a href="{{ url_for('take_exam', sec_key=section_key, exam_id=ex.id) }}" class="btn-exam">
+                            بدء الاختبار <i class="fa-solid fa-pen"></i>
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-msg">
+                    <i class="fa-solid fa-clipboard-question" style="font-size: 30px; margin-bottom: 8px; display: block; color:var(--gold-accent);"></i>
+                    لا توجد اختبارات مضافة في هذا القسم حالياً.
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <!-- سكربت التبديل بين التبويبات وتسجيل المشاهدة -->
+    <script>
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            btn.classList.add('active');
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+        }
+
+        async function markWatched(lectureId) {
+            const btn = document.getElementById(`btn-${lectureId}`);
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري التسجيل...`;
+
+            try {
+                const response = await fetch('/api/mark_watched', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ lecture_id: lectureId })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    btn.className = "watch-btn watched";
+                    btn.disabled = true;
+                    btn.innerHTML = `<i class="fa-solid fa-circle-check"></i> تم إتمام مشاهدة الدرس بنجاح`;
+                } else {
+                    alert(data.message || "حدث خطأ أثناء التسجيل");
+                    btn.innerHTML = `<i class="fa-solid fa-check"></i> تأكيد إتمام المشاهدة (تسجيل الحضور)`;
+                }
+            } catch (err) {
+                console.error(err);
+                alert("تعذر الاتصال بالخادم");
+                btn.innerHTML = `<i class="fa-solid fa-check"></i> تأكيد إتمام المشاهدة (تسجيل الحضور)`;
+            }
+        }
+    </script>
+
+</body>
+</html>

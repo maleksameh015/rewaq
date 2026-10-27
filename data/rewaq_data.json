@@ -1,0 +1,53 @@
+{
+  "users": [
+    {
+      "name": "مالك سامح سيد",
+      "identifier": "01042239704",
+      "password": "scrypt:32768:8:1$qzSy7aJfzBtnQyow$a7a2c5d743a6356aac7fc256512d59f5f8149fb49d102d57418d6a6857a1757ff53cb83318fcbb47e50b69249375238a50f7852d2923f6163bf8e38819ae4a60"
+    }
+  ],
+  "banned_users": [],
+  "muted_users": [],
+  "islamic_sections": {
+    "fiqh": [],
+    "seerah": [],
+    "tafseer": [],
+    "aqeedah": [],
+    "tazkiyah": [],
+    "hadith": []
+  },
+  "section_notes": {
+    "fiqh": [],
+    "seerah": [],
+    "tafseer": [],
+    "aqeedah": [],
+    "tazkiyah": [],
+    "hadith": []
+  },
+  "exams": {
+    "fiqh": [],
+    "seerah": [],
+    "tafseer": [],
+    "aqeedah": [],
+    "tazkiyah": [],
+    "hadith": []
+  },
+  "watch_records": {},
+  "exam_results": {},
+  "chat_messages": [],
+  "chat_settings": {
+    "is_locked": false,
+    "locked_by": ""
+  },
+  "chat_moderators": [],
+  "forum": [],
+  "notes": {},
+  "ad3yah": [],
+  "azkar": {
+    "sabah": [],
+    "masea": [],
+    "nom": [],
+    "hadith": []
+  },
+  "push_subscriptions": []
+}

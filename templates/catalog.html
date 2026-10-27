@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#070d18">
+    <title>كتالوج المنصة - رِوَاق</title>
+
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+    
+    <!-- خطوط عربية وقرآنية فاخرة وأيقونات FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Reem+Kufi:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #070d18;
+            --card-bg: #0f172a;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #1e293b;
+            --accent-color: #10b981;
+            --gold-color: #f59e0b;
+            --shadow: rgba(0, 0, 0, 0.5);
+        }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+        }
+
+        body { 
+            background-color: var(--bg-color); 
+            background-image: radial-gradient(circle at 50% 10%, rgba(16, 185, 129, 0.08), transparent 45%);
+            color: var(--text-color); 
+            padding: 15px; 
+            min-height: 100vh; 
+        }
+
+        .container { 
+            max-width: 650px; 
+            margin: 0 auto; 
+            padding-top: 75px; 
+            padding-bottom: 40px; 
+        }
+
+        /* الهيدر العلوي */
+        .top-navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 60px;
+            background-color: rgba(7, 13, 24, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 1000;
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #111a2e;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 8px 14px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .btn-back:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .page-title {
+            font-family: 'Amiri', serif;
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--gold-color);
+        }
+
+        /* عنوان الكتالوج الترحيبي */
+        .catalog-hero {
+            text-align: center;
+            margin-bottom: 25px;
+            background: #0f172a;
+            border: 1.5px solid rgba(16, 185, 129, 0.3);
+            border-radius: 18px;
+            padding: 22px 18px;
+            box-shadow: 0 4px 15px var(--shadow);
+        }
+
+        .catalog-hero h1 {
+            font-family: 'Amiri', serif;
+            font-size: 28px;
+            color: var(--gold-color);
+            margin-bottom: 6px;
+        }
+
+        .catalog-hero p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* كروت الأقسام الخمسة */
+        .catalog-card {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 14px var(--shadow);
+        }
+
+        .card-header-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #38bdf8;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 10px;
+        }
+
+        .card-content {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #e2e8f0;
+        }
+
+        .card-content p {
+            margin-bottom: 10px;
+        }
+
+        .points-list {
+            list-style: none;
+            padding: 0;
+            margin: 12px 0;
+        }
+
+        .points-list li {
+            position: relative;
+            padding-right: 22px;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+            font-size: 14px;
+        }
+
+        .points-list li::before {
+            content: "✦";
+            position: absolute;
+            right: 0;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        .hadith-quote {
+            background: rgba(16, 185, 129, 0.08);
+            border-right: 4px solid var(--accent-color);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-top: 14px;
+            font-style: italic;
+            color: #6ee7b7;
+            font-size: 13px;
+        }
+
+        /* زرار الواتساب */
+        .btn-wa-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(135deg, #10b981, #059669);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
+            transition: all 0.2s ease;
+            width: 100%;
+            margin-top: 6px;
+        }
+
+        .btn-wa-action:hover {
+            transform: translateY(-2px);
+            opacity: 0.95;
+        }
+
+        /* الصندوق القرآني الشريف */
+        .quran-box {
+            background: radial-gradient(circle at center, rgba(245, 158, 11, 0.12) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border: 1.5px solid rgba(245, 158, 11, 0.4);
+            padding: 18px 14px;
+            border-radius: 14px;
+            margin-top: 16px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .quran-verse {
+            font-family: 'Amiri', serif;
+            font-size: 20px;
+            font-weight: bold;
+            color: #fde047;
+            line-height: 2;
+            text-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <header class="top-navbar">
+        <a href="{{ url_for('index') }}" class="btn-back">
+            <i class="fa-solid fa-arrow-right"></i> الرئيسية
+        </a>
+        <span class="page-title">رِوَاق 📖 كتالوج المنصة</span>
+    </header>
+
+    <div class="container">
+
+        <div class="catalog-hero">
+            <h1>دليل وخريطة منصة رِوَاق</h1>
+            <p>خريطة طلب العلم الشرعي والتأصيل العلمي بدون تعقيد</p>
+        </div>
+
+        <!-- 1. وصف المنصة -->
+        <div class="catalog-card">
+            <div class="card-header-title">
+                <i class="fa-solid fa-book-open-reader" style="color: var(--accent-color);"></i> 1. وصف المنصة
+            </div>
+            <div class="card-content">
+                <p style="font-weight: bold; color: var(--gold-color);">بسم الله نبدأ رحلتنا..</p>
+                <p>السلام عليكم يا أهل القرآن ❤️</p>
+                <p>التطبيق ده مش معمول من شيخ لطلاب، التطبيق ده معمول من أخ بيحاول يتعلم معاكم.</p>
+                <p>أنا زيك بالظبط، تايه وسط الدنيا ونفسي أقرب من ربنا وأفهم ديني صح.. فقررت نتعلم سوا، خطوة بخطوة، وبدون تعقيد.</p>
+                
+                <p style="margin-top: 12px; font-weight: bold; color: #38bdf8;">هنا هنمشي مع بعض في طريق العلم الشرعي، حتة حتة:</p>
+                <ul class="points-list">
+                    <li><strong>عقيدة:</strong> تثبت قلبك</li>
+                    <li><strong>فقه:</strong> يخليك تعبد ربنا على بصيرة</li>
+                    <li><strong>حديث:</strong> تسمع فيه كلام حبيبك النبي ﷺ</li>
+                    <li><strong>تفسير:</strong> تحس وانت بتقرأ القرآن انه بيكلمك انت</li>
+                    <li><strong>سيرة:</strong> تعيش معاها وتعرف قدوتك</li>
+                    <li><strong>تزكية:</strong> تصلح قلبك وتهدي روحك</li>
+                </ul>
+
+                <p>وعشان نثبت اللي بنتعلمه مع بعض، عملتلك اختبارات خفيفة بعد كل درس، مش عشان نصعّب عليك، لا.. عشان تحس بحلاوة انك اتعلمت حاجة جديدة وقلبك اتعلق بيها.</p>
+                <p>كلنا هنا تلامذة على باب ربنا، وبنذاكر سوا.</p>
+                <p style="font-weight: bold; color: #34d399;">يلا نبدأ الرحلة سوا؟</p>
+
+                <div class="hadith-quote">
+                    قال رسول الله ﷺ: <strong>«من سلك طريقاً يلتمس فيه علماً، سهّل الله له به طريقاً إلى الجنة»</strong>.
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. ما هو ربحنا من المنصة؟ -->
+        <div class="catalog-card">
+            <div class="card-header-title">
+                <i class="fa-solid fa-hand-holding-heart" style="color: #f43f5e;"></i> 2. ما هو ربحنا من المنصة؟
+            </div>
+            <div class="card-content">
+                <p>هذه المنصة <strong>غير هادفة للربح كلياً</strong> ومتاحة مجاناً لدعمكم جميعاً.</p>
+                <p style="margin-top: 10px; color: var(--gold-color); font-weight: bold;">الربح الذي نتمناه ونحتاجه منكم هو:</p>
+                <p>الدعاء لكل من ساهم وساند في تطوير ونشر المنصة بظهر الغيب.</p>
+            </div>
+        </div>
+
+        <!-- 3. التواصل مع الدعم الفني -->
+        <div class="catalog-card">
+            <div class="card-header-title">
+                <i class="fa-solid fa-headset" style="color: #38bdf8;"></i> 3. التواصل مع الدعم الفني
+            </div>
+            <div class="card-content">
+                <p style="margin-bottom: 14px;">إذا واجهتك أي مشكلة تقنية أو كان لديك اقتراح لتحسين المنصة، يمكنك مراسلتنا فوراً عبر الواتساب:</p>
+                <a href="{{ support_wa_link }}" target="_blank" class="btn-wa-action">
+                    <i class="fa-brands fa-whatsapp" style="font-size: 20px;"></i>
+                    محادثة الدعم الفني عبر الواتساب مباشرة
+                </a>
+            </div>
+        </div>
+
+        <!-- 4. تابعنا (اللينكات الرسمية) -->
+        <div class="catalog-card">
+            <div class="card-header-title">
+                <i class="fa-solid fa-bullhorn" style="color: var(--gold-color);"></i> 4. تابعنا (اللينكات الرسمية)
+            </div>
+            <div class="card-content">
+                <p style="margin-bottom: 14px;">تابعنا على منصاتنا الرسمية ليصلك كل جديد والتحديثات الأسبوعية للمنصة ومجموعات المدارسة:</p>
+                <a href="https://chat.whatsapp.com/FqMM3Ts780S1epTrtCFxqt" target="_blank" class="btn-wa-action">
+                    <i class="fa-brands fa-whatsapp" style="font-size: 20px;"></i>
+                    الانضمام إلى مجتمع رِوَاق الرسمي على واتساب
+                </a>
+            </div>
+        </div>
+
+        <!-- 5. كلمة أخيرة -->
+        <div class="catalog-card">
+            <div class="card-header-title">
+                <i class="fa-solid fa-feather-pointed" style="color: #a855f7;"></i> 5. كلمة أخيرة
+            </div>
+            <div class="card-content">
+                <p style="line-height: 1.9;">إلى كل طالب وطالبة يسعون لتحقيق أحلامهم: الرحلة تحتاج إلى الصبر والعمل والمواظبة. لا تستسلموا لليأس أبداً، فكل جهد تبذلونه اليوم هو خطوة نحو مستقبلكم المشرق.</p>
+                
+                <div class="quran-box">
+                    <div class="quran-verse">
+                        ﴿ وَأَن لَّيْسَ لِلإِنسَانِ إِلَّا مَا سَعَىٰ * وَأَنَّ سَعْيَهُ سَوْفَ يُرَىٰ ﴾
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
